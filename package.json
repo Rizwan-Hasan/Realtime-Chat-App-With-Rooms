@@ -1,0 +1,20 @@
+{
+  "name": "realtime-chat-app-with-rooms",
+  "version": "1.0.0",
+  "description": "An example of a Realtime Chat App with Socketio Rooms.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "devStart": "nodemon server.js"
+  },
+  "author": "Rizwan Hasan",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "socket.io": "^4.1.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.9"
+  }
+}
