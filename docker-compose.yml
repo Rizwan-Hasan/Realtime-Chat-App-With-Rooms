@@ -24,7 +24,7 @@ services:
         target: /home/node/app
       - /home/node/app/node_modules
     depends_on:
-      - redis
+      - redis-server
     networks:
       - chat-app
 
@@ -74,8 +74,6 @@ services:
       - type: bind
         source: ./logs/nginx
         target: /var/log/nginx
-    depends_on:
-      - chat-app
     networks:
       - chat-app
 
