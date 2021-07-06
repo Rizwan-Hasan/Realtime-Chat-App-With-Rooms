@@ -14,6 +14,8 @@ const { createClient: redisClient } = require('redis');
 const pubClient = redisClient(require('./redis.config'));
 const subClient = pubClient.duplicate();
 
+pubClient.on('error', error => console.error(error));
+
 /**
  * Express
  */
