@@ -1,5 +1,5 @@
 module.exports = {
-  origin: '*',
+  origin: process.env.HOST,
   methods: ['GET', 'POST'],
   optionsSuccessStatus: 204,
 };

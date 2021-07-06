@@ -4,7 +4,8 @@
   "description": "An example of a Realtime Chat App with Socketio Rooms.",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node cluster.js",
+    "devStart": "nodemon cluster.js"
   },
   "author": "Rizwan Hasan",
   "license": "ISC",
@@ -16,5 +17,8 @@
     "express": "^4.17.1",
     "redis": "^3.1.2",
     "socket.io": "^4.1.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.9"
   }
 }

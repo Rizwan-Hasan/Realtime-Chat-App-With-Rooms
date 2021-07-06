@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const port = process.env.NODE_PORT;
 
 const server = require('http').Server(app);
 const io = require('socket.io')(server, {
@@ -94,6 +95,6 @@ function getUserRooms(socket) {
  * Start Server
  */
 
-server.listen(3000, () => {
+server.listen(port, () => {
   console.log(`Listening to port 3000, PID: ${process.pid}`);
 });
