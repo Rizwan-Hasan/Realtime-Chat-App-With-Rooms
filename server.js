@@ -13,6 +13,10 @@ const io = require('socket.io')(server, {
   transports: ['websocket'],
 });
 
+/**
+ * Express
+ */
+
 app.set('views', './views');
 app.set('view engine', 'ejs');
 app.use(cors(cors_config));
@@ -42,7 +46,9 @@ app.get('/:room', (req, res) => {
   res.render('room', { roomName: req.params.room });
 });
 
-server.listen(3000);
+/**
+ * SocketIO
+ */
 
 io.on('connection', socket => {
   socket.on('new-user', (room, name) => {
@@ -69,3 +75,10 @@ function getUserRooms(socket) {
     return names;
   }, []);
 }
+
+/**
+ * Start Server
+ */
+server.listen(3000, () => {
+  console.log('Listening to port 3000');
+});
