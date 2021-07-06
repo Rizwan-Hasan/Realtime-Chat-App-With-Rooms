@@ -4,6 +4,7 @@ const cors = require('cors');
 const cors_config = {
   origin: '*',
   methods: ['GET', 'POST'],
+  optionsSuccessStatus: 204,
 };
 const server = require('http').Server(app);
 const io = require('socket.io')(server, {
