@@ -1,10 +1,16 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
+const cors_config = {
+  origin: '*',
+  methods: ['GET', 'POST'],
+};
 const server = require('http').Server(app);
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, { cors: cors_config });
 
 app.set('views', './views');
 app.set('view engine', 'ejs');
+app.use(cors(cors_config));
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 
