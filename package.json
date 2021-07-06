@@ -4,18 +4,17 @@
   "description": "An example of a Realtime Chat App with Socketio Rooms.",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "devStart": "nodemon server.js"
+    "start": "node server.js"
   },
   "author": "Rizwan Hasan",
   "license": "ISC",
   "dependencies": {
+    "@socket.io/cluster-adapter": "^0.1.0",
+    "@socket.io/redis-adapter": "^7.0.0",
     "cors": "^2.8.5",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
+    "redis": "^3.1.2",
     "socket.io": "^4.1.2"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.9"
   }
 }
