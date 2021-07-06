@@ -8,13 +8,21 @@ const io = require('socket.io')(server, {
   cors: require('./cors.config'),
   transports: ['websocket'],
 });
-const { createAdapter: socketRedisAdapter } = require('@socket.io/redis-adapter');
+
+// const { createAdapter: socketRedisAdapter } = require('@socket.io/redis-adapter');
+const { createAdapter, setupPrimary } = require('@socket.io/cluster-adapter');
 const { createClient: redisClient } = require('redis');
 
 const pubClient = redisClient(require('./redis.config'));
-const subClient = pubClient.duplicate();
+// const subClient = pubClient.duplicate();
 
 pubClient.on('error', error => console.error(error));
+
+pubClient.on('ready', () => {
+  pubClient.exists('rooms', (err, reply) => {
+    if (reply === 0) pubClient.hmset('rooms', 'hello', 'world');
+  });
+});
 
 /**
  * Express
@@ -53,7 +61,8 @@ app.get('/:room', (req, res) => {
  * SocketIO
  */
 
-io.adapter(socketRedisAdapter(pubClient, subClient));
+// io.adapter(socketRedisAdapter(pubClient, subClient));
+io.adapter(createAdapter());
 
 io.on('connection', socket => {
   socket.on('new-user', (room, name) => {
