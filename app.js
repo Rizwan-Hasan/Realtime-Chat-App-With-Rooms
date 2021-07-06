@@ -1,16 +1,28 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const cors_config = {
-  origin: '*',
-  methods: ['GET', 'POST'],
-  optionsSuccessStatus: 204,
-};
+const port = process.env.NODE_PORT;
+
 const server = require('http').Server(app);
 const io = require('socket.io')(server, {
   path: '/chatserver',
-  cors: cors_config,
+  cors: require('./cors.config'),
   transports: ['websocket'],
+});
+
+// const { createAdapter: socketRedisAdapter } = require('@socket.io/redis-adapter');
+const { createAdapter, setupPrimary } = require('@socket.io/cluster-adapter');
+const { createClient: redisClient } = require('redis');
+
+const pubClient = redisClient(require('./redis.config'));
+// const subClient = pubClient.duplicate();
+
+pubClient.on('error', error => console.error(error));
+
+pubClient.on('ready', () => {
+  pubClient.exists('rooms', (err, reply) => {
+    if (reply === 0) pubClient.hmset('rooms', 'hello', 'world');
+  });
 });
 
 /**
@@ -19,7 +31,7 @@ const io = require('socket.io')(server, {
 
 app.set('views', './views');
 app.set('view engine', 'ejs');
-app.use(cors(cors_config));
+app.use(cors(require('./cors.config')));
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 
@@ -49,6 +61,9 @@ app.get('/:room', (req, res) => {
 /**
  * SocketIO
  */
+
+// io.adapter(socketRedisAdapter(pubClient, subClient));
+io.adapter(createAdapter());
 
 io.on('connection', socket => {
   socket.on('new-user', (room, name) => {
@@ -80,6 +95,6 @@ function getUserRooms(socket) {
  * Start Server
  */
 
-server.listen(3000, () => {
+server.listen(port, () => {
   console.log(`Listening to port 3000, PID: ${process.pid}`);
 });
