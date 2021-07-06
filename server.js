@@ -6,7 +6,11 @@ const cors_config = {
   methods: ['GET', 'POST'],
 };
 const server = require('http').Server(app);
-const io = require('socket.io')(server, { cors: cors_config });
+const io = require('socket.io')(server, {
+  path: '/socket.io',
+  cors: cors_config,
+  transports: ['websocket'],
+});
 
 app.set('views', './views');
 app.set('view engine', 'ejs');
