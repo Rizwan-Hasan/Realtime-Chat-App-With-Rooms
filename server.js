@@ -8,7 +8,7 @@ const cors_config = {
 };
 const server = require('http').Server(app);
 const io = require('socket.io')(server, {
-  path: '/socket.io',
+  path: '/chatserver',
   cors: cors_config,
   transports: ['websocket'],
 });

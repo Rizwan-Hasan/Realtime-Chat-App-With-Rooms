@@ -1,6 +1,7 @@
 'use strict';
 
 const socket = io('http://localhost:3000', {
+  path: '/chatserver',
   transports: ['websocket'],
 });
 const messageContainer = document.getElementById('message-container');
