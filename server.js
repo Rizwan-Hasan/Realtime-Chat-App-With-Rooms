@@ -116,12 +116,12 @@ io.on('connection', async socket => {
 
   socket.on('disconnect', async () => {
     try {
-      let rooms = await getRoomsData();
       const roomsList = await getUserRooms(socket);
       roomsList.forEach(async room => {
+        let rooms = await getRoomsData();
         socket.to(room).emit('user-disconnected', rooms[room].users[socket.id]);
         delete rooms[room].users[socket.id];
-        updateRoomsData(rooms);
+        await updateRoomsData(rooms);
       });
     } catch (err) {
       console.error(err);
