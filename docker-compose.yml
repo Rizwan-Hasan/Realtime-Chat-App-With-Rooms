@@ -15,6 +15,7 @@ services:
       HOST: 'http://localhost:3000/'
       REDIS_HOST: 'redis-server'
       REDIS_PORT: '6379'
+      REDIS_FAMILY: '4'
       REDIS_DB: '0'
       REDIS_USERNAME: ''
       REDIS_PASSWD: 'redis12345'
