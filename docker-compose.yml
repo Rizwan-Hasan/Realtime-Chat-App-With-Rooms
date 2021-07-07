@@ -43,6 +43,15 @@ services:
     networks:
       - chat-app
 
+  memcached-server:
+    image: memcached:alpine
+    container_name: chat-app_memcached-server
+    hostname: memcached-server
+    restart: unless-stopped
+    command: memcached --port=11211 --memory-limit=64 --max-item-size=32m
+    networks:
+      - chat-app
+
   redisinsight:
     image: redislabs/redisinsight:latest
     container_name: chat-app_redisinsight
