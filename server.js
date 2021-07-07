@@ -11,14 +11,11 @@ const io = require('socket.io')(server, {
   transports: ['websocket'],
 });
 
+const { createAdapter } = require('@socket.io/cluster-adapter');
+
+// Memcached Server
 const memjs = require('memjs');
 const memcachedClient = memjs.Client.create();
-
-// const Redis = require('ioredis');
-// const redisClient = new Redis(require('./redis.config'));
-
-// const { createAdapter: socketRedisAdapter } = require('@socket.io/redis-adapter');
-const { createAdapter: socketClusterAdapter } = require('@socket.io/cluster-adapter');
 
 /**
  * Express
@@ -30,6 +27,8 @@ app.use(logger('dev'));
 app.use(cors(require('./cors.config')));
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
+
+// Routes
 
 app.get('/', async (req, res) => {
   try {
@@ -85,9 +84,6 @@ app.get('/:room', async (req, res) => {
 /**
  * SocketIO
  */
-
-// io.adapter(socketRedisAdapter(pubClient, subClient));
-io.adapter(socketClusterAdapter());
 
 io.on('connection', async socket => {
   let rooms;
@@ -180,6 +176,9 @@ async function updateRoomsData(rooms) {
     return false;
   }
 }
+
+// Socketio Cluster Adapter
+io.adapter(createAdapter());
 
 /**
  * Start Server
