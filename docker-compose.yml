@@ -11,7 +11,7 @@ services:
     environment:
       NODE_ENV: 'development'
       NODE_PORT: 3000
-      NUM_OF_CLUSTERS: 1
+      NUM_OF_CLUSTERS: 20
       HOST: 'http://localhost:3000/'
       REDIS_HOST: 'redis-server'
       REDIS_PORT: '6379'
@@ -27,6 +27,7 @@ services:
       - /home/node/app/node_modules
     depends_on:
       - redis-server
+      - memcached-server
     networks:
       - chat-app
 
