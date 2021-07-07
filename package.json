@@ -3,10 +3,6 @@
   "version": "1.0.0",
   "description": "An example of a Realtime Chat App with Socketio Rooms.",
   "main": "server.js",
-  "scripts": {
-    "start": "node cluster.js",
-    "devStart": "nodemon cluster.js"
-  },
   "author": "Rizwan Hasan",
   "license": "ISC",
   "dependencies": {

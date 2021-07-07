@@ -26,7 +26,7 @@ app.use(cors(require('./cors.config')));
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 
-// const rooms = {};
+const rooms = {};
 
 app.get('/', (req, res) => {
   res.render('index', { rooms: rooms });
