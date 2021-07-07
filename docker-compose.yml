@@ -12,7 +12,7 @@ services:
     environment:
       NODE_ENV: 'production'
       NODE_PORT: 3000
-      NUM_OF_CLUSTERS: 20
+      NUM_OF_CLUSTERS: 10
       HOST: 'http://localhost:3000/'
       MEMCACHIER_SERVERS: 'memcached:11211'
     # volumes:
