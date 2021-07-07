@@ -19,6 +19,7 @@ services:
       REDIS_DB: '0'
       REDIS_USERNAME: ''
       REDIS_PASSWD: 'redis12345'
+      MEMCACHIER_SERVERS: 'memcached-server:11211'
     volumes:
       - type: bind
         source: .
