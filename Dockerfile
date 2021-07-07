@@ -1,4 +1,4 @@
-FROM node:14.17.1-alpine
+FROM node:14-alpine
 
 RUN npm install -g nodemon
 RUN mkdir -p /home/node/app

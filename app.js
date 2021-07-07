@@ -11,7 +11,7 @@ const io = require('socket.io')(server, {
 });
 
 const Redis = require('ioredis');
-const redisClient = new Redis(require('./redis.config'));
+// const redisClient = new Redis(require('./redis.config'));
 
 // const { createAdapter: socketRedisAdapter } = require('@socket.io/redis-adapter');
 const { createAdapter } = require('@socket.io/cluster-adapter');
@@ -86,7 +86,7 @@ function getUserRooms(socket) {
   }, []);
 }
 
-function roomData(data) {}
+function getRoomsObject(data) {}
 
 /**
  * Start Server
