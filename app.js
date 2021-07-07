@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const port = process.env.NODE_PORT;
+const logger = require('morgan');
 
 const server = require('http').Server(app);
 const io = require('socket.io')(server, {
@@ -25,6 +26,7 @@ const { createAdapter: socketClusterAdapter } = require('@socket.io/cluster-adap
 
 app.set('views', './views');
 app.set('view engine', 'ejs');
+app.use(logger('dev'));
 app.use(cors(require('./cors.config')));
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
@@ -136,24 +138,20 @@ io.on('connection', async socket => {
  */
 
 async function getUserRooms(socket) {
-  let rooms;
-
   try {
-    rooms = await getRoomsData();
+    const rooms = await getRoomsData();
+    return Object.entries(rooms).reduce((names, [name, room]) => {
+      if (room.users[socket.id] !== null) names.push(name);
+      return names;
+    }, []);
   } catch (err) {
     console.error(err);
     return;
   }
-
-  return Object.entries(rooms).reduce((names, [name, room]) => {
-    if (room.users[socket.id] !== null) names.push(name);
-    return names;
-  }, []);
 }
 
 async function getRoomsData() {
   let rooms;
-
   try {
     rooms = await memcachedClient.get('rooms');
     rooms = rooms.value;
@@ -188,5 +186,5 @@ async function updateRoomsData(rooms) {
  */
 
 server.listen(port, () => {
-  console.log(`Listening to port 3000, PID: ${process.pid}`);
+  console.log(`Listening to port ${port}, PID: ${process.pid}`);
 });
