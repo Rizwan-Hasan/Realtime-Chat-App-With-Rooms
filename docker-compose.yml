@@ -8,9 +8,9 @@ services:
     container_name: chat-app
     hostname: chat-app
     restart: unless-stopped
-    command: nodemon cluster.js
+    command: node cluster.js # nodemon cluster.js
     environment:
-      NODE_ENV: 'developmemt'
+      NODE_ENV: 'production'
       NODE_PORT: 3000
       NUM_OF_CLUSTERS: 25
       HOST: 'http://localhost:3000/'
@@ -22,11 +22,11 @@ services:
       REDIS_PASSWD: 'redis12345'
       REDIS_FLUSHALL: 'true'
       MEMCACHIER_SERVERS: 'memcached:11211'
-    volumes:
-      - type: bind
-        source: .
-        target: /home/node/app
-      - /home/node/app/node_modules
+    # volumes:
+    #   - type: bind
+    #     source: .
+    #     target: /home/node/app
+    #   - /home/node/app/node_modules
     depends_on:
       - redis
     networks:
@@ -74,4 +74,5 @@ services:
 
 networks:
   realtime-chat-app-with-rooms:
+    name: realtime-chat-app-with-rooms
     driver: bridge
