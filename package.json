@@ -2,23 +2,17 @@
   "name": "realtime-chat-app-with-rooms",
   "version": "1.0.0",
   "description": "An example of a Realtime Chat App with Socketio Rooms.",
-  "main": "server.js",
-  "scripts": {
-    "start": "node cluster.js",
-    "devStart": "nodemon cluster.js"
-  },
   "author": "Rizwan Hasan",
   "license": "ISC",
   "dependencies": {
-    "@socket.io/cluster-adapter": "^0.1.0",
     "@socket.io/redis-adapter": "^7.0.0",
     "cors": "^2.8.5",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
-    "redis": "^3.1.2",
+    "ioredis": "^4.27.6",
+    "memjs": "^1.3.0",
+    "morgan": "^1.10.0",
+    "remove": "^0.1.5",
     "socket.io": "^4.1.2"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.9"
   }
 }

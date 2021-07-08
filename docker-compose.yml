@@ -8,51 +8,46 @@ services:
     container_name: chat-app
     hostname: chat-app
     restart: unless-stopped
+    command: node cluster.js
     environment:
-      NODE_ENV: 'development'
+      NODE_ENV: 'production'
       NODE_PORT: 3000
-      NUM_OF_CLUSTERS: 1
+      NUM_OF_CLUSTERS: 25
       HOST: 'http://localhost:3000/'
-      REDIS_HOST: 'redis-server'
+      REDIS_HOST: 'redis'
       REDIS_PORT: '6379'
-      REDIS_DB: '0'
+      REDIS_FAMILY: 4
       REDIS_USERNAME: ''
+      REDIS_DB: 0
       REDIS_PASSWD: 'redis12345'
-    volumes:
-      - type: bind
-        source: .
-        target: /home/node/app
-      - /home/node/app/node_modules
+      MEMCACHIER_SERVERS: 'memcached:11211'
+    # volumes:
+    #   - type: bind
+    #     source: .
+    #     target: /home/node/app
+    #   - /home/node/app/node_modules
     depends_on:
-      - redis-server
+      - redis
+      - memcached
     networks:
       - chat-app
 
-  redis-server:
+  redis:
     build:
       context: ./docker/redis
       dockerfile: Dockerfile
     container_name: chat-app_redis-server
     hostname: redis
     restart: unless-stopped
-    volumes:
-      - type: volume
-        source: redis-data
-        target: /data
     networks:
       - chat-app
 
-  redisinsight:
-    image: redislabs/redisinsight:latest
-    container_name: chat-app_redisinsight
-    hostname: redisinsight
+  memcached:
+    image: memcached:alpine
+    container_name: chat-app_memcached
+    hostname: memcached
     restart: unless-stopped
-    ports:
-      - '8001:8001'
-    volumes:
-      - type: volume
-        source: redisinsight-data
-        target: /db
+    command: memcached --port=11211 --memory-limit=64 --max-item-size=32m
     networks:
       - chat-app
 
@@ -76,13 +71,6 @@ services:
         target: /var/log/nginx
     networks:
       - chat-app
-
-volumes:
-  redis-data:
-    name: chat-app_redis-data
-
-  redisinsight-data:
-    name: chat-app_redisinsight
 
 networks:
   chat-app:

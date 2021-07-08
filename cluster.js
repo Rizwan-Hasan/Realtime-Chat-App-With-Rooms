@@ -1,8 +1,12 @@
 const cluster = require('cluster');
-const numCPUs = require('os').cpus().length;
 const numOfClusters = Number(process.env.NUM_OF_CLUSTERS);
 
 if (cluster.isMaster) {
+  // needed for packets containing buffers (you can ignore it if you only send plaintext objects)
+  cluster.setupMaster({
+    serialization: 'advanced',
+  });
+
   // Fork workers.
   for (let i = 0; i < numOfClusters; i++) {
     cluster.fork();
@@ -13,8 +17,5 @@ if (cluster.isMaster) {
     // cluster.fork();
   });
 } else {
-  /**
-   * Run App
-   */
-  require('./app');
+  require('./server'); // Run App Server
 }
