@@ -1,19 +1,19 @@
 version: '3.9'
 
 services:
-  chat-app:
+  chat-app-s1:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: chat-app
-    hostname: chat-app
+    container_name: chat-app-s1
+    hostname: chat-app-s1
     restart: unless-stopped
     command: node cluster.js # nodemon cluster.js
     environment:
       NODE_ENV: 'production'
       NODE_PORT: 3000
       NUM_OF_CLUSTERS: 25
-      HOST: 'http://localhost:3000/'
+      HOST: 'http://localhost:8080/'
       REDIS_HOST: 'redis'
       REDIS_PORT: '6379'
       REDIS_FAMILY: 4
@@ -21,7 +21,6 @@ services:
       REDIS_DB: 0
       REDIS_PASSWD: 'redis12345'
       REDIS_FLUSHALL: 'true'
-      MEMCACHIER_SERVERS: 'memcached:11211'
     # volumes:
     #   - type: bind
     #     source: .
@@ -29,6 +28,51 @@ services:
     #   - /home/node/app/node_modules
     depends_on:
       - redis
+    networks:
+      - realtime-chat-app-with-rooms
+
+  chat-app-s2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: chat-app-s2
+    hostname: chat-app-s2
+    restart: unless-stopped
+    command: node cluster.js # nodemon cluster.js
+    environment:
+      NODE_ENV: 'production'
+      NODE_PORT: 3001
+      NUM_OF_CLUSTERS: 25
+      HOST: 'http://localhost:8080/'
+      REDIS_HOST: 'redis'
+      REDIS_PORT: '6379'
+      REDIS_FAMILY: 4
+      REDIS_USERNAME: ''
+      REDIS_DB: 0
+      REDIS_PASSWD: 'redis12345'
+      REDIS_FLUSHALL: 'true'
+    # volumes:
+    #   - type: bind
+    #     source: .
+    #     target: /home/node/app
+    #   - /home/node/app/node_modules
+    depends_on:
+      - redis
+    networks:
+      - realtime-chat-app-with-rooms
+
+  haproxy:
+    build:
+      context: ./docker/haproxy
+      dockerfile: Dockerfile
+    container_name: chat-app_haproxy
+    hostname: chat-app
+    restart: unless-stopped
+    # ports:
+    #   - '8888:3000'
+    depends_on:
+      - chat-app-s1
+      - chat-app-s2
     networks:
       - realtime-chat-app-with-rooms
 
@@ -41,15 +85,6 @@ services:
     restart: unless-stopped
     networks:
       - realtime-chat-app-with-rooms
-
-  # memcached:
-  #   image: memcached:alpine
-  #   container_name: chat-app_memcached
-  #   hostname: memcached
-  #   restart: unless-stopped
-  #   command: memcached --port=11211 --memory-limit=64 --max-item-size=32m
-  #   networks:
-  #     - realtime-chat-app-with-rooms
 
   nginx:
     build:
