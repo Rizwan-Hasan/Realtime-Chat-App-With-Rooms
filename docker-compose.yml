@@ -8,9 +8,9 @@ services:
     container_name: chat-app
     hostname: chat-app
     restart: unless-stopped
-    command: node cluster.js
+    command: nodemon cluster.js
     environment:
-      NODE_ENV: 'production'
+      NODE_ENV: 'developmemt'
       NODE_PORT: 3000
       NUM_OF_CLUSTERS: 25
       HOST: 'http://localhost:3000/'
@@ -20,17 +20,17 @@ services:
       REDIS_USERNAME: ''
       REDIS_DB: 0
       REDIS_PASSWD: 'redis12345'
+      REDIS_FLUSHALL: 'true'
       MEMCACHIER_SERVERS: 'memcached:11211'
-    # volumes:
-    #   - type: bind
-    #     source: .
-    #     target: /home/node/app
-    #   - /home/node/app/node_modules
+    volumes:
+      - type: bind
+        source: .
+        target: /home/node/app
+      - /home/node/app/node_modules
     depends_on:
       - redis
-      - memcached
     networks:
-      - chat-app
+      - realtime-chat-app-with-rooms
 
   redis:
     build:
@@ -40,16 +40,16 @@ services:
     hostname: redis
     restart: unless-stopped
     networks:
-      - chat-app
+      - realtime-chat-app-with-rooms
 
-  memcached:
-    image: memcached:alpine
-    container_name: chat-app_memcached
-    hostname: memcached
-    restart: unless-stopped
-    command: memcached --port=11211 --memory-limit=64 --max-item-size=32m
-    networks:
-      - chat-app
+  # memcached:
+  #   image: memcached:alpine
+  #   container_name: chat-app_memcached
+  #   hostname: memcached
+  #   restart: unless-stopped
+  #   command: memcached --port=11211 --memory-limit=64 --max-item-size=32m
+  #   networks:
+  #     - realtime-chat-app-with-rooms
 
   nginx:
     build:
@@ -70,8 +70,8 @@ services:
         source: ./logs/nginx
         target: /var/log/nginx
     networks:
-      - chat-app
+      - realtime-chat-app-with-rooms
 
 networks:
-  chat-app:
+  realtime-chat-app-with-rooms:
     driver: bridge

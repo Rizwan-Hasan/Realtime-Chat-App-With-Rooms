@@ -13,13 +13,14 @@ const io = require('socket.io')(server, {
 
 // Redis Adapter
 const Redis = require('ioredis');
-const pubClient = new Redis(require('./redis.config'));
-const subClient = pubClient.duplicate();
+const redisClient = new Redis(require('./redis.config'));
+
+const pubClient = redisClient.duplicate();
+const subClient = redisClient.duplicate();
 const { createAdapter } = require('@socket.io/redis-adapter');
 
-// Memcached Server
-const memjs = require('memjs');
-const memcachedClient = memjs.Client.create();
+// Redis Flush on Start/Restart
+if (process.env.REDIS_FLUSHALL === 'true') redisClient.flushall();
 
 /**
  * Express
@@ -123,7 +124,11 @@ io.on('connection', async socket => {
       const roomsList = await getUserRooms(socket);
       roomsList.forEach(async room => {
         let rooms = await getRoomsData();
-        socket.to(room).emit('user-disconnected', rooms[room].users[socket.id]);
+        const user = rooms[room].users[socket.id];
+
+        if (user === null || user === undefined) return;
+        socket.to(room).emit('user-disconnected', user);
+
         delete rooms[room].users[socket.id];
         await updateRoomsData(rooms);
       });
@@ -153,8 +158,7 @@ async function getUserRooms(socket) {
 async function getRoomsData() {
   let rooms;
   try {
-    rooms = await memcachedClient.get('rooms');
-    rooms = rooms.value;
+    rooms = await redisClient.get('rooms');
     if (rooms !== null && rooms !== undefined) {
       rooms = rooms.toString();
       rooms = JSON.parse(rooms);
@@ -173,7 +177,8 @@ async function getRoomsData() {
 
 async function updateRoomsData(rooms) {
   try {
-    await memcachedClient.set('rooms', JSON.stringify(rooms));
+    rooms = JSON.stringify(rooms);
+    await redisClient.set('rooms', rooms);
     return true;
   } catch (err) {
     console.error(err);
