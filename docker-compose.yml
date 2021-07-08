@@ -14,6 +14,12 @@ services:
       NODE_PORT: 3000
       NUM_OF_CLUSTERS: 25
       HOST: 'http://localhost:3000/'
+      REDIS_HOST: 'redis'
+      REDIS_PORT: '6379'
+      REDIS_FAMILY: 4
+      REDIS_USERNAME: ''
+      REDIS_DB: 0
+      REDIS_PASSWD: 'redis12345'
       MEMCACHIER_SERVERS: 'memcached:11211'
     # volumes:
     #   - type: bind
@@ -21,7 +27,18 @@ services:
     #     target: /home/node/app
     #   - /home/node/app/node_modules
     depends_on:
+      - redis
       - memcached
+    networks:
+      - chat-app
+
+  redis:
+    build:
+      context: ./docker/redis
+      dockerfile: Dockerfile
+    container_name: chat-app_redis-server
+    hostname: redis
+    restart: unless-stopped
     networks:
       - chat-app
 

@@ -11,7 +11,11 @@ const io = require('socket.io')(server, {
   transports: ['websocket'],
 });
 
-const { createAdapter } = require('@socket.io/cluster-adapter');
+// Redis Adapter
+const Redis = require('ioredis');
+const pubClient = new Redis(require('./redis.config'));
+const subClient = pubClient.duplicate();
+const { createAdapter } = require('@socket.io/redis-adapter');
 
 // Memcached Server
 const memjs = require('memjs');
@@ -178,7 +182,7 @@ async function updateRoomsData(rooms) {
 }
 
 // Socketio Cluster Adapter
-io.adapter(createAdapter());
+io.adapter(createAdapter(pubClient, subClient));
 
 /**
  * Start Server
