@@ -5,3 +5,6 @@ An example of a Realtime Chat App with Socketio Rooms with advance deployment fe
 ```console
 docker-compose up
 ```
+
+### Design
+![](./design.png)
